@@ -1,4 +1,6 @@
 # bash-viewer
+
 Supporting program to collect all data from bash
-MainActivity - главное меню
-ActivityWIthText - окно где будут отображены башы 
+
+MainActivity - РіР»Р°РІРЅРѕРµ РјРµРЅСЋ
+ActivityWIthText - РѕРєРЅРѕ РіРґРµ Р±СѓРґСѓС‚ РѕС‚РѕР±СЂР°Р¶РµРЅС‹ Р±Р°С€С‹ 
