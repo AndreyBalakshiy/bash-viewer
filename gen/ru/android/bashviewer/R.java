@@ -29,11 +29,11 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int TextView01=0x7f090003;
-        public static final int TextView02=0x7f090004;
         public static final int action_settings=0x7f090005;
         public static final int btn=0x7f090002;
         public static final int btn2=0x7f090001;
+        public static final int button1=0x7f090003;
+        public static final int scrollView1=0x7f090004;
         public static final int textView1=0x7f090000;
     }
     public static final class layout {
@@ -53,15 +53,16 @@ public final class R {
         public static final int status_text=0x7f050003;
     }
     public static final class style {
+        public static final int ActionBar_Solid_GreenStyle=0x7f070003;
         /** 
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     
 
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        
+	            Theme customizations available in newer API levels can go in
+	            res/values-vXX/styles.xml, while customizations related to
+	            backward-compatibility can go here.
+	        
 
         Base application theme for API 11+. This theme completely replaces
         AppBaseTheme from res/values/styles.xml on API 11+ devices.
@@ -79,5 +80,9 @@ public final class R {
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f070001;
+        /**  Application theme. 
+  <item name="android:actionBarStyle">@style/ActionBar.Solid.GreenStyle</item> 
+         */
+        public static final int MyAppTheme=0x7f070002;
     }
 }
