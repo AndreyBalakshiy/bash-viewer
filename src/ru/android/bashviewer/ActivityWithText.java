@@ -1,22 +1,24 @@
 package ru.android.bashviewer;
 
 import android.app.Activity;
-import android.hardware.Camera.Size;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ActivityWithText extends Activity {
+	final String Key_001 = "TEXT_SIZE";
+	
 	final int SIZE_10 = 0;
 	final int SIZE_12 = 1;
 	final int SIZE_14 = 2;
 	final int SIZE_16 = 3;	
 	final int SIZE_18 = 4;	
+	private float txtSize = 14;
 	
 	private TextView txtView;
 
@@ -30,12 +32,19 @@ public class ActivityWithText extends Activity {
 	}	
 	@Override
 	protected void onStart() {
+		SharedPreferences sPref = getPreferences(MODE_PRIVATE);
+		txtSize = sPref.getFloat(Key_001, SIZE_14);
+		txtView.setTextSize(txtSize);
 		super.onStart();
 		//load previus information
 	}
 	
-	@Override
+	@Override	
 	protected void onStop() {
+		SharedPreferences sPref = getPreferences(MODE_PRIVATE);
+		Editor editor = sPref.edit();
+		editor.putFloat(Key_001, txtSize);
+		editor.commit();
 		super.onStop();
 		//saved current state
 	}
@@ -44,35 +53,34 @@ public class ActivityWithText extends Activity {
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if (v.getId() == R.id.txtView) {
 			menu.add(0, SIZE_10, 0, "10");
-			menu.add(0, SIZE_12, 0, "12");
-			menu.add(0, SIZE_14, 0, "14");
-			menu.add(0, SIZE_16, 0, "16");
-			menu.add(0, SIZE_18, 0, "18");
+			menu.add(0, SIZE_12, 1, "12");
+			menu.add(0, SIZE_14, 2, "14");
+			menu.add(0, SIZE_16, 3, "16");
+			menu.add(0, SIZE_18, 4, "18");
 		}
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		int newSize = 20;
 		switch(item.getItemId()) {
 		case SIZE_10:
-			newSize = 10;
+			txtSize = 10;
 			break;
 		case SIZE_12:
-			newSize = 12;
+			txtSize = 12;
 			break;
 		case SIZE_14:
-			newSize = 14;
+			txtSize = 14;
 			break;
 		case SIZE_16:
-			newSize = 16;
+			txtSize = 16;
 			break;	
 		case SIZE_18:
-			newSize = 18;
+			txtSize = 18;
 			break;	
 		}
 		
-		txtView.setTextSize(newSize);
+		txtView.setTextSize(txtSize);
 
 		return super.onMenuItemSelected(featureId, item);
 	}

@@ -15,6 +15,7 @@ public final class R {
         public static final int background2=0x7f060001;
     }
     public static final class dimen {
+        public static final int DEFAULT_TEXT_SIZE=0x7f040002;
         /**  Default screen margins, per the Android Design guidelines. 
 
          Example customization of dimensions originally defined in res/values/dimens.xml
