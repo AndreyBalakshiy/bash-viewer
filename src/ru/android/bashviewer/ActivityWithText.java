@@ -19,6 +19,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils.StringSplitter;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 
 public class ActivityWithText extends Activity {
 	private final String Key_001 = "TEXT_SIZE";
+	private final String Key_002 = "FILE_NAME";
 	private final String tag = "MyTags";
 	
 	final int SIZE_10 = 0;
@@ -36,6 +38,8 @@ public class ActivityWithText extends Activity {
 	final int SIZE_16 = 3;	
 	final int SIZE_18 = 4;	
 	private float txtSize = 14;
+	
+	private String curFileName = "";
 	
 	private JSONObject json;
 	private TextView txtView;
@@ -55,77 +59,15 @@ public class ActivityWithText extends Activity {
 	protected void onStart() {
 		Log.d(tag, "start");
 		
-	/*	 File sdPath = Environment.getExternalStorageDirectory();
-		    // добавляем свой каталог к пути
-		    sdPath = new File(sdPath.getAbsolutePath());
-		    // формируем объект File, который содержит путь к файлу
-		    File sdFile = new File(sdPath, "F");
-		    try {
-		      // открываем поток для чтения
-		      BufferedReader br = new BufferedReader(new FileReader(sdFile));
-		      String str = "";
-		      // читаем содержимое
-		      while ((str = br.readLine()) != null) {
-		       // Log.d(LOG_TAG, str);
-		    	  txtView.setText(str);
-		      }
-		    } catch (FileNotFoundException e) {
-		      e.printStackTrace();
-		    } catch (IOException e) {
-		      e.printStackTrace();
-		    }*/
-	/*	try {
-		    if (!sdPath.exists()) {
-		    	sdPath.getParentFile().mkdirs();
-		    	sdPath.createNewFile(); 
-		    }
-		    BufferedWriter bw = new BufferedWriter(new FileWriter(sdPath));
-		    bw.write("Всё ок!");
-		    bw.close();
-		} catch (IOException e) {
-			txtView.setText("Неудача!");
-		}*/
-	/*	try {
-		      // отрываем поток для записи
-		      BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
-		          openFileOutput("f", MODE_PRIVATE)));
-		      // пишем данные
-		      bw.write("Содержимое файла");
-		      // закрываем поток
-		      bw.close();
-		 //     Log.d(LOG_TAG, "Файл записан");
-		    } catch (FileNotFoundException e) {
-		      e.printStackTrace();
-		    } catch (IOException e) {
-		      e.printStackTrace();
-		    }*/
 		
-		File sdPath = Environment.getExternalStorageDirectory();
-	    // добавляем свой каталог к пути
-	    sdPath = new File(sdPath.getAbsolutePath() + File.separator + "Data" + File.separator);
-	    // формируем объект File, который содержит путь к файлу
-	    File sdFile = new File(sdPath, "js");
-		try {
-		//	json = JSONReader.read(new File(sdPath.getAbsoluteFile() + "/Data/js"));
-		//	json = JSONReader.read(openFileInput("js"));
-			json = JSONReader.read(sdFile);
-		} catch (IOException e1) {
-			Log.d(tag, "aa");
-			e1.printStackTrace();
-		} catch (JSONException e1) {
-			Log.d(tag, "aaaa2");
-			e1.printStackTrace();
-		}
-		try {
-			txtView.setText((CharSequence) json.get("text"));
-		} catch (JSONException e) {
-			Log.d(tag, "bbbb");
-			e.printStackTrace();
-		}
 		
 		SharedPreferences sPref = getPreferences(MODE_PRIVATE);
 		txtSize = sPref.getFloat(Key_001, SIZE_14);
 		txtView.setTextSize(txtSize);
+		
+		curFileName = sPref.getString(Key_002, "1");
+		loadBashText(curFileName);
+		
 		super.onStart();
 		//load previus information
 	}
@@ -135,6 +77,7 @@ public class ActivityWithText extends Activity {
 		SharedPreferences sPref = getPreferences(MODE_PRIVATE);
 		Editor editor = sPref.edit();
 		editor.putFloat(Key_001, txtSize);
+		editor.putString(Key_002, curFileName);
 		editor.commit();
 		super.onStop();
 		//saved current state
@@ -176,4 +119,33 @@ public class ActivityWithText extends Activity {
 		return super.onMenuItemSelected(featureId, item);
 	}
 
+	private void loadBashText(String fileName) {
+		File sdPath = Environment.getExternalStorageDirectory();
+	    // добавляем свой каталог к пути
+	    sdPath = new File(sdPath.getAbsolutePath() + File.separator + "Data" + File.separator);
+	    // формируем объект File, который содержит путь к файлу
+	    File sdFile = new File(sdPath, fileName);
+		try {
+			json = JSONReader.read(sdFile);
+		} catch (IOException e1) {
+			Log.d(tag, "read IOE");
+			e1.printStackTrace();
+		} catch (JSONException e1) {
+			Log.d(tag, "read JSONE");
+			e1.printStackTrace();
+		}
+		try {
+			txtView.setText((CharSequence) json.get("text"));
+		} catch (JSONException e) {
+			Log.d(tag, "SetText JSONE");
+			e.printStackTrace();
+		}
+	}
+	
+	private void nextBashText() {
+		int nextId = Integer.getInteger(curFileName);
+		nextId++;
+		//Обновить статус бар
+		
+	}
 }
