@@ -1,6 +1,5 @@
 package ru.android.bashviewer;
 
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -21,7 +21,7 @@ public class ActivityWithText extends FragmentActivity {
 	private ViewPager pager;
 	private PagerAdapter pagerAdapter;
 	
-	private final String Key_001 = "TEXT_SIZE";
+	final static String Key_001 = "TEXT_SIZE";
 	private final String Key_002 = "FILE_NAME";
 	private final String tag = "MyTags";
 	
@@ -30,12 +30,10 @@ public class ActivityWithText extends FragmentActivity {
 	final int SIZE_14 = 2;
 	final int SIZE_16 = 3;	
 	final int SIZE_18 = 4;	
-	private float txtSize = 14;
+	static float txtSize = 14;
 	
 	private int allCountFiles = 0;
 	private int curFileId = 1;
-	
-	private TextView txtView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,48 +44,52 @@ public class ActivityWithText extends FragmentActivity {
 		pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
 		pager.setAdapter(pagerAdapter);
 		
-	//	txtView = (TextView)findViewById(R.id.txtView);
-	//	registerForContextMenu(txtView);
-	//	Log.d(tag, "create");
+		pager.setOnPageChangeListener(new OnPageChangeListener() {
+
+		      @Override
+		      public void onPageSelected(int position) {
+
+		      }
+
+		      @Override
+		      public void onPageScrolled(int position, float positionOffset,
+		          int positionOffsetPixels) {
+		      }
+
+		      @Override
+		      public void onPageScrollStateChanged(int state) {
+		      }
+		    });
+		
 	}	
+	
+	static void setTextSize(float size) {
+		txtSize = size;
+	}
+	
 	@Override
 	protected void onStart() {
 		Log.d(tag, "start");
 		//узнать сколько всего файлов
-		
 		SharedPreferences sPref = getPreferences(MODE_PRIVATE);
-//		txtSize = sPref.getFloat(Key_001, SIZE_14);
-//		txtView.setTextSize(txtSize);
-		
+	    txtSize = sPref.getFloat(Key_001, SIZE_14);		
 	//	curFileId = sPref.getInt(Key_002, 1);
-		curFileId = 1;
+		curFileId = 0;
 		
 		super.onStart();
-		//load previus information
 	}
 	
 	@Override	
 	protected void onStop() {
 		SharedPreferences sPref = getPreferences(MODE_PRIVATE);
 		Editor editor = sPref.edit();
-//		editor.putFloat(Key_001, txtSize);
+		editor.putFloat(Key_001, txtSize);
 		editor.putInt(Key_002, curFileId);
 		editor.commit();
 		super.onStop();
 		//saved current state
 	}
-	
-	@Override 
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		if (v.getId() == R.id.txtView) {
-			menu.add(0, SIZE_10, 0, "10");
-			menu.add(0, SIZE_12, 1, "12");
-			menu.add(0, SIZE_14, 2, "14");
-			menu.add(0, SIZE_16, 3, "16");
-			menu.add(0, SIZE_18, 4, "18");
-		}
-		super.onCreateContextMenu(menu, v, menuInfo);
-	}
+
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch(item.getItemId()) {
@@ -108,9 +110,22 @@ public class ActivityWithText extends FragmentActivity {
 			break;	
 		}
 		
-		txtView.setTextSize(txtSize);
+		((TextView) findViewById(R.id.txtView)).setTextSize(txtSize);
 
 		return super.onMenuItemSelected(featureId, item);
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		if (v.getId() == R.id.txtView) {
+			menu.add(0, SIZE_10, 0, "10");
+			menu.add(0, SIZE_12, 1, "12");
+			menu.add(0, SIZE_14, 2, "14");
+			menu.add(0, SIZE_16, 3, "16");
+			menu.add(0, SIZE_18, 4, "18");
+		}
+		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 	
 	private class MyFragmentPagerAdapter extends FragmentPagerAdapter {

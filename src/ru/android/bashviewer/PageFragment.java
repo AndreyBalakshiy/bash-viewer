@@ -42,7 +42,11 @@ public class PageFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment, null);
+		
 		TextView textView = (TextView)view.findViewById(R.id.txtView);
+    	registerForContextMenu(textView);
+    	textView.setTextSize(ActivityWithText.txtSize);
+		
 		String text = "ERROR";
 		try {
 			text = loadBashText(pageId);
@@ -72,4 +76,5 @@ public class PageFragment extends Fragment {
 		}
 		return (String) json.get("text");
 	}
+	
 }
