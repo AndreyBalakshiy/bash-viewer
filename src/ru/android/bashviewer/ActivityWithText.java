@@ -15,6 +15,7 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class ActivityWithText extends FragmentActivity {
@@ -48,7 +49,10 @@ public class ActivityWithText extends FragmentActivity {
 
 		      @Override
 		      public void onPageSelected(int position) {
-
+		    	  Button btn3 = (Button) findViewById(R.id.btn3);
+		    	  String mark = "?";
+		    	  curFileId = position;
+		    	  btn3.setText(mark + "; ќценить;" + " " + Integer.toString(position) + "/" + "10");
 		      }
 
 		      @Override
@@ -63,9 +67,9 @@ public class ActivityWithText extends FragmentActivity {
 		
 	}	
 	
-	static void setTextSize(float size) {
+/*	static void setTextSize(float size) {
 		txtSize = size;
-	}
+	}*/
 	
 	@Override
 	protected void onStart() {
@@ -73,9 +77,11 @@ public class ActivityWithText extends FragmentActivity {
 		//узнать сколько всего файлов
 		SharedPreferences sPref = getPreferences(MODE_PRIVATE);
 	    txtSize = sPref.getFloat(Key_001, SIZE_14);		
-	//	curFileId = sPref.getInt(Key_002, 1);
-		curFileId = 0;
+		curFileId = sPref.getInt(Key_002, 1);
 		
+		pager.setCurrentItem(curFileId);
+		String mark = "?";
+		((Button)findViewById(R.id.btn3)).setText(mark + "; ќценить;" + " " + Integer.toString(curFileId) + "/" + "10" + ";");
 		super.onStart();
 	}
 	
@@ -129,7 +135,7 @@ public class ActivityWithText extends FragmentActivity {
 	}
 	
 	private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
-
+		
 		public MyFragmentPagerAdapter(FragmentManager fm) {
 			super(fm);
 		}
