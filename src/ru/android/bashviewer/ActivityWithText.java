@@ -1,25 +1,15 @@
 package ru.android.bashviewer;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Writer;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.os.Environment;
-import android.text.TextUtils.StringSplitter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -27,7 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-public class ActivityWithText extends Activity {
+public class ActivityWithText extends FragmentActivity {
+	private ViewPager pager;
+	private PagerAdapter pagerAdapter;
+	
 	private final String Key_001 = "TEXT_SIZE";
 	private final String Key_002 = "FILE_NAME";
 	private final String tag = "MyTags";
@@ -40,34 +33,34 @@ public class ActivityWithText extends Activity {
 	private float txtSize = 14;
 	
 	private int allCountFiles = 0;
-	private String curFileName = "";
+	private int curFileId = 1;
 	
-	private JSONObject json;
 	private TextView txtView;
-	
-	public static File EXTERNAL_DIR = Environment.getExternalStorageDirectory();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.withtext);
 		
-		txtView = (TextView)findViewById(R.id.txtView);
-		registerForContextMenu(txtView);
+		pager = (ViewPager)findViewById(R.id.pager);
+		pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
+		pager.setAdapter(pagerAdapter);
+		
+	//	txtView = (TextView)findViewById(R.id.txtView);
+	//	registerForContextMenu(txtView);
 	//	Log.d(tag, "create");
 	}	
 	@Override
 	protected void onStart() {
 		Log.d(tag, "start");
-		
 		//узнать сколько всего файлов
 		
 		SharedPreferences sPref = getPreferences(MODE_PRIVATE);
-		txtSize = sPref.getFloat(Key_001, SIZE_14);
-		txtView.setTextSize(txtSize);
+//		txtSize = sPref.getFloat(Key_001, SIZE_14);
+//		txtView.setTextSize(txtSize);
 		
-		curFileName = sPref.getString(Key_002, "1");
-		loadBashText(curFileName);
+	//	curFileId = sPref.getInt(Key_002, 1);
+		curFileId = 1;
 		
 		super.onStart();
 		//load previus information
@@ -77,15 +70,11 @@ public class ActivityWithText extends Activity {
 	protected void onStop() {
 		SharedPreferences sPref = getPreferences(MODE_PRIVATE);
 		Editor editor = sPref.edit();
-		editor.putFloat(Key_001, txtSize);
-		editor.putString(Key_002, curFileName);
+//		editor.putFloat(Key_001, txtSize);
+		editor.putInt(Key_002, curFileId);
 		editor.commit();
 		super.onStop();
 		//saved current state
-	}
-	
-	private void refreshStatusBar() {
-		
 	}
 	
 	@Override 
@@ -123,47 +112,23 @@ public class ActivityWithText extends Activity {
 
 		return super.onMenuItemSelected(featureId, item);
 	}
+	
+	private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
-	private void loadBashText(String fileName) {
-		File sdPath = Environment.getExternalStorageDirectory();
-	    // добавляем свой каталог к пути
-	    sdPath = new File(sdPath.getAbsolutePath() + File.separator + "Data" + File.separator);
-	    // формируем объект File, который содержит путь к файлу
-	    File sdFile = new File(sdPath, fileName);
-		try {
-			json = JSONReader.read(sdFile);
-		} catch (IOException e1) {
-			Log.d(tag, "read IOE");
-			e1.printStackTrace();
-		} catch (JSONException e1) {
-			Log.d(tag, "read JSONE");
-			e1.printStackTrace();
+		public MyFragmentPagerAdapter(FragmentManager fm) {
+			super(fm);
 		}
-		try {
-			txtView.setText((CharSequence) json.get("text"));
-		} catch (JSONException e) {
-			Log.d(tag, "SetText JSONE");
-			e.printStackTrace();
+
+		@Override
+		public Fragment getItem(int arg0) {
+			return PageFragment.newInstance(arg0);
 		}
-	}
-	
-	private void setCurFileName(int id) {
-		curFileName = Integer.toString(id);
-	}
-	
-	private void nextBashText() {
-		int nextId = Integer.getInteger(curFileName);
-		nextId++;
-		//Обновить статус бар
-		setContentView(nextId);
-		loadBashText(curFileName);
-	}
-	
-	private void prevBashText() {
-		int nextId = Integer.getInteger(curFileName);
-		nextId = Math.max(nextId - 1, 1);
-		//Обновить статус бар
-		setContentView(nextId);
-		loadBashText(curFileName);		
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return 6;
+		}
+
 	}
 }
