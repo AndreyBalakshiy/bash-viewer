@@ -39,6 +39,7 @@ public class ActivityWithText extends Activity {
 	final int SIZE_18 = 4;	
 	private float txtSize = 14;
 	
+	private int allCountFiles = 0;
 	private String curFileName = "";
 	
 	private JSONObject json;
@@ -59,7 +60,7 @@ public class ActivityWithText extends Activity {
 	protected void onStart() {
 		Log.d(tag, "start");
 		
-		
+		//узнать сколько всего файлов
 		
 		SharedPreferences sPref = getPreferences(MODE_PRIVATE);
 		txtSize = sPref.getFloat(Key_001, SIZE_14);
@@ -81,6 +82,10 @@ public class ActivityWithText extends Activity {
 		editor.commit();
 		super.onStop();
 		//saved current state
+	}
+	
+	private void refreshStatusBar() {
+		
 	}
 	
 	@Override 
@@ -142,10 +147,23 @@ public class ActivityWithText extends Activity {
 		}
 	}
 	
+	private void setCurFileName(int id) {
+		curFileName = Integer.toString(id);
+	}
+	
 	private void nextBashText() {
 		int nextId = Integer.getInteger(curFileName);
 		nextId++;
 		//Обновить статус бар
-		
+		setContentView(nextId);
+		loadBashText(curFileName);
+	}
+	
+	private void prevBashText() {
+		int nextId = Integer.getInteger(curFileName);
+		nextId = Math.max(nextId - 1, 1);
+		//Обновить статус бар
+		setContentView(nextId);
+		loadBashText(curFileName);		
 	}
 }
