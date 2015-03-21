@@ -1,9 +1,11 @@
 package ru.android.bashviewer;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
@@ -41,6 +43,12 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 	private int allCountFiles = 0;
 	private int curFileId = 1;
 	private String listValue = "Start";
+	
+	private String My_Table = "bash_table";
+	private int VALUE_NOT_FOUND = -777;
+	
+	private DBHelper dbHelper;
+	private SQLiteDatabase db;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +66,8 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		      @Override
 		      public void onPageSelected(int position) {
 		    	  Button btn3 = (Button) findViewById(R.id.btn3);
-		    	  String mark = "?";
-		    	  //getting mark from DB 
-		    	  curFileId = position;
-		    	  btn3.setText(mark + "; ќценить;" + " " + Integer.toString(position) + "/" + "10");
+		    	  curFileId = position;		   
+		    	  btn3.setText(getMark(getValueFromDb(curFileId)) + "; ќценить;" + " " + Integer.toString(position) + "/" + "10");
 		      }
 
 		      @Override
@@ -74,6 +80,8 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		      }
 		    });
 		
+		dbHelper = new DBHelper(this);
+		db = dbHelper.getWritableDatabase();
 	}	
 	
 	@Override
@@ -86,11 +94,11 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		
 		pager.setCurrentItem(curFileId);
 		if (listValue != "Start") {
+			int mark = makeMark(listValue);
+			addValueInDb(curFileId, mark);
 			// adding result to databases
 		}
-		String mark = "?";
-		// getting mark
-		((Button)findViewById(R.id.btn3)).setText(mark + "; ќценить;" + " " + Integer.toString(curFileId) + "/" + "10" + ";");
+		((Button)findViewById(R.id.btn3)).setText(getMark(getValueFromDb(curFileId)) + "; ќценить;" + " " + Integer.toString(curFileId) + "/" + "10" + ";");
 		super.onStart();
 	}
 	
@@ -161,11 +169,45 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		}
 	}
 
+	private String getMark(int markInt) {
+		String mark = "?";
+		if (markInt != VALUE_NOT_FOUND) {
+			if (markInt > 0) {
+				if (markInt == 6)
+					mark = "C";
+				else
+					mark = "+" + markInt;
+			} else {
+				if (markInt == -6)
+					mark = "X";
+				else
+					mark = Integer.toString(markInt);
+			}
+		}
+		return mark;
+	}
+	
+	private int makeMark(String mark) {
+		if (mark.equals("0"))
+			return 0;
+		int markInt = 0;
+		if (mark.equals("—арказм"))
+			markInt = 6;
+		else
+			if (mark.equals("”далить"))
+				markInt = -6;
+			else {
+				markInt = (int)(mark.charAt(1)) - (int)'0';
+				if (mark.charAt(0) == '-')
+					markInt *= -1;
+			}
+		return markInt;
+	}
+	
 	@Override
 	public void onClick(View v) {
 		Intent intent = new Intent(getApplicationContext(), ExpandedListActivity.class);
 		startActivityForResult(intent, 1);
-		((Button)findViewById(R.id.btn3)).setText("123");
 		//”же обновленный listValue
 	}
 	
@@ -176,6 +218,27 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		}
 		listValue = data.getStringExtra(ExpandedListActivity.List_Value);	
 	}
+	
+	private int getValueFromDb(int id) {
+		String selection = "id = " + id;
+		Cursor c = db.query(My_Table, null, selection, null, null, null, null);
+		if (c.moveToFirst()) {
+			int markColIndex = c.getColumnIndex("mark");
+			return c.getInt(markColIndex);
+		}
+		return VALUE_NOT_FOUND;
+	}
+	private void addValueInDb(int id, int mark) {
+		int c = getValueFromDb(id);
+		if (c == mark)
+			return;
+		if (c != VALUE_NOT_FOUND)
+			db.delete(My_Table, "id = " + id, null);
+		ContentValues cv = new ContentValues();
+		cv.put("id", id);
+		cv.put("mark", mark);
+		db.insert(My_Table, null, cv);
+	}
 }
 
 class DBHelper extends SQLiteOpenHelper {
@@ -184,7 +247,7 @@ class DBHelper extends SQLiteOpenHelper {
 	}
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		Log.d("MyTags", "--- OnCreate DB ---");
+	//	Log.d("MyTags", "--- OnCreate DB ---");
 		db.execSQL("create table bash_table (" +
 				"id integer primary key," +
 				"mark tinyint" + ");");

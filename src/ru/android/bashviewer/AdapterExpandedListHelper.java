@@ -112,7 +112,7 @@ public class AdapterExpandedListHelper {
 	}
 
 	String getGroupChildText(int groupPos, int childPos) {
-		return getGroupText(groupPos) + " " + getChildText(groupPos, childPos);
+		return getChildText(groupPos, childPos);
 	}
 
 }
