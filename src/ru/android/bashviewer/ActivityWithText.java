@@ -1,5 +1,6 @@
 package ru.android.bashviewer;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -15,10 +16,11 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class ActivityWithText extends FragmentActivity {
+public class ActivityWithText extends FragmentActivity implements OnClickListener {
 	private ViewPager pager;
 	private PagerAdapter pagerAdapter;
 	
@@ -40,6 +42,8 @@ public class ActivityWithText extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.withtext);
+		
+		((Button)findViewById(R.id.btn3)).setOnClickListener(this);
 		
 		pager = (ViewPager)findViewById(R.id.pager);
 		pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
@@ -151,5 +155,11 @@ public class ActivityWithText extends FragmentActivity {
 			return 6;
 		}
 
+	}
+
+	@Override
+	public void onClick(View v) {
+		Intent intent = new Intent(getApplicationContext(), ExpandedListActivity.class);
+		startActivity(intent);
 	}
 }

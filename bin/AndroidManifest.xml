@@ -7,16 +7,31 @@
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="21" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <application android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:theme="@style/AppBaseTheme">
-        <activity android:name=".MainActivity" android:label="@string/app_name">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppBaseTheme" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ActivityWithText" android:theme="@style/MyAppTheme"></activity>
+        <activity
+            android:name=".ActivityWithText"
+            android:theme="@style/MyAppTheme" >
+        </activity>
+        <activity
+            android:name="ExpandedListActivity"
+            android:label="@string/title_activity_expanded_list" >
+        </activity>
     </application>
 
 </manifest>
