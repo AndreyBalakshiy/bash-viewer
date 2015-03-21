@@ -1,8 +1,11 @@
 package ru.android.bashviewer;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -172,5 +175,22 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 			return;
 		}
 		listValue = data.getStringExtra(ExpandedListActivity.List_Value);	
+	}
+}
+
+class DBHelper extends SQLiteOpenHelper {
+	public DBHelper(Context context) {
+		super(context, "myDB", null, 1);
+	}
+	@Override
+	public void onCreate(SQLiteDatabase db) {
+		Log.d("MyTags", "--- OnCreate DB ---");
+		db.execSQL("create table bash_table (" +
+				"id integer primary key," +
+				"mark tinyint" + ");");
+	}
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		
 	}
 }
