@@ -37,6 +37,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 	
 	private int allCountFiles = 0;
 	private int curFileId = 1;
+	private String listValue = "Start";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		      public void onPageSelected(int position) {
 		    	  Button btn3 = (Button) findViewById(R.id.btn3);
 		    	  String mark = "?";
+		    	  //getting mark from DB 
 		    	  curFileId = position;
 		    	  btn3.setText(mark + "; ќценить;" + " " + Integer.toString(position) + "/" + "10");
 		      }
@@ -71,10 +73,6 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		
 	}	
 	
-/*	static void setTextSize(float size) {
-		txtSize = size;
-	}*/
-	
 	@Override
 	protected void onStart() {
 		Log.d(tag, "start");
@@ -84,7 +82,11 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		curFileId = sPref.getInt(Key_002, 1);
 		
 		pager.setCurrentItem(curFileId);
+		if (listValue != "Start") {
+			// adding result to databases
+		}
 		String mark = "?";
+		// getting mark
 		((Button)findViewById(R.id.btn3)).setText(mark + "; ќценить;" + " " + Integer.toString(curFileId) + "/" + "10" + ";");
 		super.onStart();
 	}
@@ -154,12 +156,21 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 			// TODO Auto-generated method stub
 			return 6;
 		}
-
 	}
 
 	@Override
 	public void onClick(View v) {
 		Intent intent = new Intent(getApplicationContext(), ExpandedListActivity.class);
-		startActivity(intent);
+		startActivityForResult(intent, 1);
+		((Button)findViewById(R.id.btn3)).setText("123");
+		//”же обновленный listValue
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data == null) {
+			return;
+		}
+		listValue = data.getStringExtra(ExpandedListActivity.List_Value);	
 	}
 }
