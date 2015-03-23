@@ -31,7 +31,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 	
 	final static String Key_001 = "TEXT_SIZE";
 	private final String Key_002 = "FILE_NAME";
-	private final String tag = "MyTags";
+	final static String tag = "MyTags";
 	
 	final int SIZE_10 = 0;
 	final int SIZE_12 = 1;
@@ -40,7 +40,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 	final int SIZE_18 = 4;	
 	static float txtSize = 14;
 	
-	private int allCountFiles = 0;
+	private int allCountFiles = 10;
 	private int curFileId = 1;
 	private String listValue = "Start";
 	
@@ -165,7 +165,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return 6;
+			return allCountFiles;
 		}
 	}
 
@@ -217,6 +217,9 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 			return;
 		}
 		listValue = data.getStringExtra(ExpandedListActivity.List_Value);	
+	/*	if (pager.getCurrentItem() != allCountFiles) {
+			pager.setCurrentItem(pager.getCurrentItem() + 1);
+		}*/
 	}
 	
 	private int getValueFromDb(int id) {
