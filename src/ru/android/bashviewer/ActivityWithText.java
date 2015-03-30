@@ -246,7 +246,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 
 class DBHelper extends SQLiteOpenHelper {
 	public DBHelper(Context context) {
-		super(context, "myDB", null, 1);
+		super(context, "myDB", null, 2);
 	}
 	@Override
 	public void onCreate(SQLiteDatabase db) {
