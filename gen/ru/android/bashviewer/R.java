@@ -30,16 +30,17 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int RelativeLayout1=0x7f090002;
-        public static final int action_settings=0x7f090009;
-        public static final int btn=0x7f090006;
-        public static final int btn2=0x7f090007;
-        public static final int btn3=0x7f090004;
-        public static final int elvMain=0x7f090001;
-        public static final int linearLayout1=0x7f090000;
-        public static final int pager=0x7f090008;
-        public static final int scrollView=0x7f090003;
-        public static final int txtView=0x7f090005;
+        public static final int RelativeLayout1=0x7f090003;
+        public static final int action_settings=0x7f09000a;
+        public static final int btn=0x7f090007;
+        public static final int btn2=0x7f090008;
+        public static final int btn3=0x7f090005;
+        public static final int checkBox1=0x7f090000;
+        public static final int elvMain=0x7f090002;
+        public static final int linearLayout1=0x7f090001;
+        public static final int pager=0x7f090009;
+        public static final int scrollView=0x7f090004;
+        public static final int txtView=0x7f090006;
     }
     public static final class layout {
         public static final int activity_expanded_list=0x7f030000;
@@ -52,15 +53,14 @@ public final class R {
         public static final int main=0x7f080001;
     }
     public static final class string {
-        public static final int MUCHTEXT=0x7f050006;
         public static final int action_settings=0x7f050002;
         public static final int app_name=0x7f050000;
         public static final int btn2_text=0x7f050005;
-        public static final int btn3_text=0x7f050007;
+        public static final int btn3_text=0x7f050006;
         public static final int btn_text=0x7f050004;
         public static final int hello_world=0x7f050001;
         public static final int status_text=0x7f050003;
-        public static final int title_activity_expanded_list=0x7f050008;
+        public static final int title_activity_expanded_list=0x7f050007;
     }
     public static final class style {
         public static final int ActionBar_Solid_GreenStyle=0x7f070003;

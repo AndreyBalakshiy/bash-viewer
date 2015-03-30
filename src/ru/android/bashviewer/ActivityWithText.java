@@ -67,7 +67,9 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		      public void onPageSelected(int position) {
 		    	  Button btn3 = (Button) findViewById(R.id.btn3);
 		    	  curFileId = position;		   
-		    	  btn3.setText(getMark(getValueFromDb(curFileId)) + "; Оценить;" + " " + Integer.toString(position) + "/" + "10");
+		    	  btn3.setText("Сарказм: " + isSarcasm(curFileId) + "; "
+		    			  + getMark(getValueFromDb(curFileId)) + "; "
+		    	  + Integer.toString(position) + "/" + "25386");
 		      }
 
 		      @Override
@@ -98,7 +100,9 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 			addValueInDb(curFileId, mark);
 			// adding result to databases
 		}
-		((Button)findViewById(R.id.btn3)).setText(getMark(getValueFromDb(curFileId)) + "; Оценить;" + " " + Integer.toString(curFileId) + "/" + "10" + ";");
+		((Button)findViewById(R.id.btn3)).setText("Сарказм: " + isSarcasm(curFileId) + "; "
+  			  + getMark(getValueFromDb(curFileId)) + "; "
+  	   + Integer.toString(curFileId) + "/" + "25386");
 		super.onStart();
 	}
 	
@@ -220,6 +224,11 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 	/*	if (pager.getCurrentItem() != allCountFiles) {
 			pager.setCurrentItem(pager.getCurrentItem() + 1);
 		}*/
+	}
+	
+	private String isSarcasm(int id) {
+		//return Да,  Нет, ?
+		return "?";
 	}
 	
 	private int getValueFromDb(int id) {
