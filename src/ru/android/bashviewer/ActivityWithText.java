@@ -44,7 +44,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 	private int curFileId = 1;
 	private String listValue = "Start";
 	
-	private String My_Table = "bash_table";
+	private static String My_Table = "bash_table";
 	private int VALUE_NOT_FOUND = -777;
 	
 	private DBHelper dbHelper;
@@ -67,7 +67,10 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		      public void onPageSelected(int position) {
 		    	  Button btn3 = (Button) findViewById(R.id.btn3);
 		    	  curFileId = position;		   
-		    	  btn3.setText(getMark(getValueFromDb(curFileId)) + "; Оценить;" + " " + Integer.toString(position) + "/" + "10");
+		    	  curFileId = position;		   
+		    	  btn3.setText("Сарказм: " + isSarcasm(curFileId) + "; "
+		    			  + getMark(getValueFromDb(curFileId)) + "; "
+		    	  + Integer.toString(position) + "/" + "25386");
 		      }
 
 		      @Override
@@ -98,7 +101,9 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 			addValueInDb(curFileId, mark);
 			// adding result to databases
 		}
-		((Button)findViewById(R.id.btn3)).setText(getMark(getValueFromDb(curFileId)) + "; Оценить;" + " " + Integer.toString(curFileId) + "/" + "10" + ";");
+		((Button)findViewById(R.id.btn3)).setText("Сарказм: " + isSarcasm(curFileId) + "; "
+	  			  + getMark(getValueFromDb(curFileId)) + "; "
+	  	   + Integer.toString(curFileId) + "/" + "25386");
 		super.onStart();
 	}
 	
@@ -222,6 +227,23 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		}*/
 	}
 	
+	private String isSarcasm(int id) {
+		String selection = "id = " + id;
+		Cursor c = db.query(My_Table, null, selection, null, null, null, null);
+		if (c.moveToFirst()) {
+			int sarcasmColIndex = c.getColumnIndex("sarcasm");
+			int sarcasmValue = c.getInt(sarcasmColIndex);
+	 		if (sarcasmValue == 0)
+				return "Да";
+			else
+				if (sarcasmValue == 1)
+					return "Нет";
+				else
+					return "?";
+		}		
+		return "?";
+	}
+	
 	private int getValueFromDb(int id) {
 		String selection = "id = " + id;
 		Cursor c = db.query(My_Table, null, selection, null, null, null, null);
@@ -246,17 +268,20 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 
 class DBHelper extends SQLiteOpenHelper {
 	public DBHelper(Context context) {
-		super(context, "myDB", null, 2);
+		super(context, "myDB", null, 3);
 	}
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 	//	Log.d("MyTags", "--- OnCreate DB ---");
 		db.execSQL("create table bash_table (" +
 				"id integer primary key," +
-				"mark tinyint" + ");");
+				"mark tinyint" +
+				"sarcasm tinyint DEFAULT 2" + ");");
 	}
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		
+		if (newVersion == 3) {
+			db.execSQL("alter table bash_table add column sarcasm tinyint DEFAULT 2"); //0 - Да, 1 - Нет, 2 - ?
+		}
 	}
 }
