@@ -43,6 +43,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 	private int allCountFiles = 10;
 	private int curFileId = 1;
 	private String listValue = "Start";
+	private int sarcasmValue = 2;
 	
 	private static String My_Table = "bash_table";
 	private int VALUE_NOT_FOUND = -777;
@@ -65,8 +66,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 
 		      @Override
 		      public void onPageSelected(int position) {
-		    	  Button btn3 = (Button) findViewById(R.id.btn3);
-		    	  curFileId = position;		   
+		    	  Button btn3 = (Button) findViewById(R.id.btn3);   
 		    	  curFileId = position;		   
 		    	  btn3.setText("Сарказм: " + isSarcasm(curFileId) + "; "
 		    			  + getMark(getValueFromDb(curFileId)) + "; "
@@ -97,8 +97,12 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		
 		pager.setCurrentItem(curFileId);
 		if (listValue != "Start") {
-			int mark = makeMark(listValue);
-			addValueInDb(curFileId, mark);
+			int mark = -1;
+			if (!listValue.equals("?"))
+				mark = makeMark(listValue);
+			else
+				mark = getValueFromDb(curFileId);
+			addValueInDb(curFileId, mark, sarcasmValue);
 			// adding result to databases
 		}
 		((Button)findViewById(R.id.btn3)).setText("Сарказм: " + isSarcasm(curFileId) + "; "
@@ -222,6 +226,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 			return;
 		}
 		listValue = data.getStringExtra(ExpandedListActivity.List_Value);	
+		sarcasmValue = data.getIntExtra(ExpandedListActivity.Sarcasm_Value, 2);
 	/*	if (pager.getCurrentItem() != allCountFiles) {
 			pager.setCurrentItem(pager.getCurrentItem() + 1);
 		}*/
@@ -233,10 +238,10 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		if (c.moveToFirst()) {
 			int sarcasmColIndex = c.getColumnIndex("sarcasm");
 			int sarcasmValue = c.getInt(sarcasmColIndex);
-	 		if (sarcasmValue == 0)
+	 		if (sarcasmValue == 1)
 				return "Да";
 			else
-				if (sarcasmValue == 1)
+				if (sarcasmValue == 0)
 					return "Нет";
 				else
 					return "?";
@@ -253,15 +258,18 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		}
 		return VALUE_NOT_FOUND;
 	}
-	private void addValueInDb(int id, int mark) {
+	private void addValueInDb(int id, int mark, int sarcasm) {
 		int c = getValueFromDb(id);
-		if (c == mark)
+		String isSarc = isSarcasm(id);
+		int sarc = isSarc.equals("Да") ? 1 : isSarc.equals("Нет") ? 0 : 2;
+		if (c == mark && sarc == sarcasm)
 			return;
 		if (c != VALUE_NOT_FOUND)
 			db.delete(My_Table, "id = " + id, null);
 		ContentValues cv = new ContentValues();
 		cv.put("id", id);
 		cv.put("mark", mark);
+		cv.put("sarcasm", sarcasm);
 		db.insert(My_Table, null, cv);
 	}
 }
@@ -281,7 +289,7 @@ class DBHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		if (newVersion == 3) {
-			db.execSQL("alter table bash_table add column sarcasm tinyint DEFAULT 2"); //0 - Да, 1 - Нет, 2 - ?
+			db.execSQL("alter table bash_table add column sarcasm tinyint DEFAULT 2"); //0 - no, 1 - yes, 2 - ?
 		}
 	}
 }

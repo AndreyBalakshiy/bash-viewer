@@ -69,9 +69,11 @@ public class MainActivity extends Activity implements OnClickListener {
 		if (c.moveToFirst()) {
 			int idColIndex = c.getColumnIndex("id");
 			int markColIndex = c.getColumnIndex("mark");
+			int sarcColIndex = c.getColumnIndex("sarcasm");
 			do {
 				try {
-					bw.write(Integer.toString(c.getInt(idColIndex)) + " " + Integer.toString(c.getInt(markColIndex)) + " ");
+					bw.write(Integer.toString(c.getInt(idColIndex)) + " " + Integer.toString(c.getInt(markColIndex)) + " " + 
+													Integer.toString(c.getInt(sarcColIndex)) + "\n");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

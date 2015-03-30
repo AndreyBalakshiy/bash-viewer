@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.CheckBox;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
-public class ExpandedListActivity extends Activity {
+public class ExpandedListActivity extends Activity implements OnClickListener {
 	static final String List_Value = "List_Value";
+	static final String Sarcasm_Value = "Sarcasm_Value";
 	
 	ExpandableListView elvMain;
 	AdapterExpandedListHelper ah;
@@ -28,7 +31,7 @@ public class ExpandedListActivity extends Activity {
 
 		elvMain = (ExpandableListView) findViewById(R.id.elvMain);
 		elvMain.setAdapter(adapter);
-
+		findViewById(R.id.button1).setOnClickListener(this);
 		// нажатие на элемент
 		elvMain.setOnChildClickListener(new OnChildClickListener() {
 			public boolean onChildClick(ExpandableListView parent, View v,
@@ -36,10 +39,25 @@ public class ExpandedListActivity extends Activity {
 				Intent intent = new Intent();
 				intent.putExtra(List_Value,
 						ah.getGroupChildText(groupPosition, childPosition));
+				CheckBox checkBox = (CheckBox)findViewById(R.id.checkBox1);
+				intent.putExtra(Sarcasm_Value, checkBox.isChecked() ? 1 : 0);
+				
 			    setResult(RESULT_OK, intent);
 			    finish();
 				return false;
 			}
 		});
+	}
+
+	@Override
+	public void onClick(View v) {
+		Intent intent = new Intent();
+		intent.putExtra(List_Value,
+				"?");
+		CheckBox checkBox = (CheckBox)findViewById(R.id.checkBox1);
+		intent.putExtra(Sarcasm_Value, checkBox.isChecked() ? 1 : 0);
+		
+	    setResult(RESULT_OK, intent);
+	    finish();
 	}
 }

@@ -16,7 +16,7 @@ public class AdapterExpandedListHelper {
 	// названия элементов
 	String[] good = new String[] { "+1", "+2", "+3", "+4", "+5"};
 	String[] bad = new String[] { "-1", "-2", "-3", "-4", "-5" };
-	String[] neurtal = new String[] { "0", "Сарказм", "Удалить"};
+	String[] neurtal = new String[] { "0", "Удалить"};
 
 	// коллекция для групп
 	ArrayList<Map<String, String>> groupData;
