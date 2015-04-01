@@ -45,28 +45,18 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 	final int SIZE_18 = 4;	
 	static float txtSize = 14;
 
-	static ArrayList <Integer> filesList;
+	static int filesList[];
 	private int fullFirstName = -1;
-	private int firstFileNumber = 1;
-	private int lastFileNumber = 55555;
-	private int curFileId = 0;
+	private int filesCount = 2000;
+	private int curFileId = 1;
 	private String listValue = "Start";
 	private int sarcasmValue = 2;
 	
-	private static String My_Table = "bash_table_v2";
+	static String My_Table = "bash_table";
 	private int VALUE_NOT_FOUND = -777;
 	
 	private DBHelper dbHelper;
 	private SQLiteDatabase db;
-	
-/*	private int getPosInArrayList(int value) {
-		int res = 0;
-		for (int i = 0; i < filesList.size(); i++)
-			if (filesList.get(i) == value)
-				return i;
-			
-		return res;
-	}*/
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +73,14 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 
 		      @Override
 		      public void onPageSelected(int position) {
-		    	  Button btn3 = (Button) findViewById(R.id.btn3);   
-		    	//  curFileId = getPosInArrayList(position);		
+		    	  Button btn3 = (Button) findViewById(R.id.btn3);   	
 		    	  curFileId = position;		
-		    	  btn3.setText("Сарказм: " + isSarcasm(filesList.get(curFileId)) + "; "
-		    			  + getMark(getValueFromDb(filesList.get(curFileId))) + "; "
-		    	  + Integer.toString(curFileId) + "/" + Integer.toString(lastFileNumber));
+		    	  btn3.setText("Сарказм: " + isSarcasm(filesList[curFileId]) + "; "
+		    			  + getMark(getValueFromDb(filesList[curFileId])) + "; "
+		    	  + Integer.toString(curFileId) + "/" + Integer.toString(filesCount));
+		    /*	  btn3.setText("Сарказм: " + isSarcasm(curFileId) + "; "
+		    			  + getMark(getValueFromDb(curFileId)) + "; "
+		    	  + Integer.toString(curFileId) + "/" + Integer.toString(filesCount));*/
 		      }
 
 		      @Override
@@ -105,51 +97,51 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		db = dbHelper.getWritableDatabase();
 	}	
 	
-	private ArrayList<Integer> getFilesList() {
-
+	private void getFilesList() {
 		File sdPath = Environment.getExternalStorageDirectory();
-	    // добавляем свой каталог к пути
 	    sdPath = new File(sdPath.getAbsolutePath() + File.separator + "Data" + File.separator);
-	    // формируем объект File, который содержит путь к файлу
-	    String allFiles[] = sdPath.list();
-		ArrayList<Integer> files = new ArrayList<Integer>();	 
-		lastFileNumber = allFiles.length;
-		for (int i = 0; i < lastFileNumber; i++)
-			files.add(Integer.parseInt(allFiles[i]));
-		return files;
+  
+	    String allFiles[] = sdPath.list(); 
+		filesList = new int[allFiles.length + 1];
+		for (int i = 0; i < allFiles.length; i++)
+			filesList[i] = Integer.parseInt(allFiles[i]);
 	}
 	
 	@Override
 	protected void onStart() {
-		Log.d(tag, "start");
+	//	Log.d(tag, "start");
 		//узнать сколько всего файлов
-		filesList = getFilesList();
-		// номер первого и номер последнего
-		SharedPreferences sPref = getPreferences(MODE_PRIVATE);
-	    txtSize = sPref.getFloat(Key_001, SIZE_14);	
-	    	
-		curFileId = sPref.getInt(Key_002, 0);
-		lastFileNumber = filesList.size();
-		fullFirstName = sPref.getInt(Key_003, 1);
-		if (curFileId > lastFileNumber || fullFirstName != (int)filesList.get(0)) {
-			curFileId = 0;
-			fullFirstName = (int)filesList.get(0);
+		if (listValue == "Start") {
+			getFilesList();
+
+			SharedPreferences sPref = getPreferences(MODE_PRIVATE);
+			txtSize = sPref.getFloat(Key_001, SIZE_14);
+
+			curFileId = sPref.getInt(Key_002, 1);
+			// filesCount = filesList.length - 2;
+			fullFirstName = sPref.getInt(Key_003, -1);
+			if (curFileId > filesCount || fullFirstName != filesList[0]) {
+				curFileId = 0;
+				fullFirstName = filesList[0];
+			}
 		}
-		
+	//	Log.d(tag, "pager begin");
 		pager.setCurrentItem(curFileId);
+	//	Log.d(tag, "pager end");
 
 		if (listValue != "Start") {
-			int mark = -1;
-			if (!listValue.equals("?"))
-				mark = makeMark(listValue);
-			else
-				mark = getValueFromDb(filesList.get(curFileId));
-			addValueInDb(filesList.get(curFileId), mark, sarcasmValue);
+			int mark = makeMark(listValue);
+			addValueInDb(filesList[curFileId], mark, sarcasmValue);
+		//	addValueInDb(curFileId, mark, sarcasmValue);
 		}
-		((Button)findViewById(R.id.btn3)).setText("Сарказм: " + isSarcasm(filesList.get(curFileId)) + "; "
-	  			  + getMark(getValueFromDb(filesList.get(curFileId))) + "; "
-	  	   + Integer.toString(curFileId) + "/" + Integer.toString(lastFileNumber));
+		((Button)findViewById(R.id.btn3)).setText("Сарказм: " + isSarcasm(filesList[curFileId]) + "; "
+	  			  + getMark(getValueFromDb(filesList[curFileId])) + "; "
+	  	   + Integer.toString(curFileId) + "/" + Integer.toString(filesCount));
+	/*	((Button)findViewById(R.id.btn3)).setText("Сарказм: " + isSarcasm(curFileId) + "; "
+	  			  + getMark(getValueFromDb(curFileId)) + "; "
+	  	   + Integer.toString(curFileId) + "/" + Integer.toString(filesCount));*/
 		
+		Log.d(tag, "superStart");
 		super.onStart();
 	}
 	
@@ -217,7 +209,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return lastFileNumber;
+			return filesCount;
 		}
 	}
 
@@ -317,20 +309,21 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 
 class DBHelper extends SQLiteOpenHelper {
 	public DBHelper(Context context) {
-		super(context, "myDB", null, 3);
+		super(context, "myDB", null, 5);
 	}
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 	//	Log.d("MyTags", "--- OnCreate DB ---");
-		db.execSQL("create table bash_table_v2 (" +
+	//	db.execSQL("drop table " + ActivityWithText.My_Table);
+		db.execSQL("create table " + ActivityWithText.My_Table + " (" +
 				"id integer primary key," +
 				"mark tinyint" +
 				"sarcasm tinyint DEFAULT 2" + ");");
 	}
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		if (oldVersion < 3 && newVersion == 3) {
-			db.execSQL("alter table bash_table_v2 add column sarcasm tinyint DEFAULT 2"); //0 - no, 1 - yes, 2 - ?
-		}
+	/*	if (oldVersion < 3 && newVersion == 3) {
+			db.execSQL("alter table bash_table add column sarcasm tinyint DEFAULT 2"); //0 - no, 1 - yes, 2 - ?
+		}*/
 	}
 }

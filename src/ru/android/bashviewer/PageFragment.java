@@ -51,7 +51,8 @@ public class PageFragment extends Fragment {
 		
 		String text = "ERROR";
 		try {
-			text = loadBashText(ActivityWithText.filesList.get(pageId));
+		//	text = loadBashText(pageId);
+			text = loadBashText(ActivityWithText.filesList[pageId - 1]);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
