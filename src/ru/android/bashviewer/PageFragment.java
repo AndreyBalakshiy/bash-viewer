@@ -22,7 +22,7 @@ public class PageFragment extends Fragment {
 	public static File EXTERNAL_DIR = Environment.getExternalStorageDirectory();
 	private JSONObject json;
 	
-	private int pageId = 1;
+	private int pageId = 0;
 	
 	static PageFragment newInstance(int id) {
 		PageFragment pageFragment = new PageFragment();
@@ -51,7 +51,7 @@ public class PageFragment extends Fragment {
 		
 		String text = "ERROR";
 		try {
-			text = loadBashText(pageId);
+			text = loadBashText(ActivityWithText.filesList.get(pageId));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
