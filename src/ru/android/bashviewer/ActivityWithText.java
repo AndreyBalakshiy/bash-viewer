@@ -78,6 +78,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		    	  btn3.setText("Сарказм: " + isSarcasm(filesList[curFileId]) + "; "
 		    			  + getMark(getValueFromDb(filesList[curFileId])) + "; "
 		    	  + Integer.toString(curFileId) + "/" + Integer.toString(filesCount));
+		    	  TextView textView = (TextView)findViewById(R.id.txtView);
 		    /*	  btn3.setText("Сарказм: " + isSarcasm(curFileId) + "; "
 		    			  + getMark(getValueFromDb(curFileId)) + "; "
 		    	  + Integer.toString(curFileId) + "/" + Integer.toString(filesCount));*/
@@ -99,9 +100,10 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 	
 	private void getFilesList() {
 		File sdPath = Environment.getExternalStorageDirectory();
-	    sdPath = new File(sdPath.getAbsolutePath() + File.separator + "Data" + File.separator);
+	    sdPath = new File(sdPath.getAbsolutePath() + File.separator + "Bashes" + File.separator);
   
-	    String allFiles[] = sdPath.list(); 
+	    String allFiles[] = sdPath.list();
+	//    String allFiles[] = {"56", "123", "124"};
 		filesList = new int[allFiles.length + 1];
 		for (int i = 0; i < allFiles.length; i++)
 			filesList[i] = Integer.parseInt(allFiles[i]);
@@ -113,7 +115,12 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		//узнать сколько всего файлов
 		if (listValue == "Start") {
 			getFilesList();
-
+			/*ДЕБАГ*/
+		/*	filesList = new int[4];
+			filesList[0] = 56; filesList[1] = 123; filesList[2] = 124;*/
+			/* */
+			
+			
 			SharedPreferences sPref = getPreferences(MODE_PRIVATE);
 			txtSize = sPref.getFloat(Key_001, SIZE_14);
 
@@ -249,7 +256,6 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 	public void onClick(View v) {
 		Intent intent = new Intent(getApplicationContext(), ExpandedListActivity.class);
 		startActivityForResult(intent, 1);
-		//Уже обновленный listValue
 	}
 	
 	@Override
@@ -309,7 +315,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 
 class DBHelper extends SQLiteOpenHelper {
 	public DBHelper(Context context) {
-		super(context, "myDB", null, 5);
+		super(context, "MainBashBD6", null, 5);
 	}
 	@Override
 	public void onCreate(SQLiteDatabase db) {
@@ -317,7 +323,7 @@ class DBHelper extends SQLiteOpenHelper {
 	//	db.execSQL("drop table " + ActivityWithText.My_Table);
 		db.execSQL("create table " + ActivityWithText.My_Table + " (" +
 				"id integer primary key," +
-				"mark tinyint" +
+				"mark tinyint," +
 				"sarcasm tinyint DEFAULT 2" + ");");
 	}
 	@Override

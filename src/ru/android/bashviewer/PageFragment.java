@@ -44,8 +44,6 @@ public class PageFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment, null);
 		
 		TextView textView = (TextView)view.findViewById(R.id.txtView);
-		if (textView.getTextSize() < 10) 
-			textView.setTextSize((float) 18.);
     	registerForContextMenu(textView);
     	textView.setTextSize(ActivityWithText.txtSize);
 		
@@ -65,7 +63,7 @@ public class PageFragment extends Fragment {
 	private String loadBashText(int fileId) throws JSONException {
 		File sdPath = Environment.getExternalStorageDirectory();
 	    // добавляем свой каталог к пути
-	    sdPath = new File(sdPath.getAbsolutePath() + File.separator + "Data" + File.separator);
+	    sdPath = new File(sdPath.getAbsolutePath() + File.separator + "Bashes" + File.separator);
 	    // формируем объект File, который содержит путь к файлу
 	    File sdFile = new File(sdPath, Integer.toString(fileId));
 		try {
