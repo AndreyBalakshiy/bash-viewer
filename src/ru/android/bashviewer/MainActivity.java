@@ -73,7 +73,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			do {
 				try {
 					bw.write(Integer.toString(c.getInt(idColIndex)) + " " + Integer.toString(c.getInt(markColIndex)) + " " + 
-													Integer.toString(c.getInt(sarcColIndex)) + "\n");
+													Integer.toString(c.getInt(sarcColIndex)) + " ");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

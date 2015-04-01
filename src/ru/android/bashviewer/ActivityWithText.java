@@ -40,7 +40,7 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 	final int SIZE_18 = 4;	
 	static float txtSize = 14;
 	
-	private int allCountFiles = 10;
+	private int allCountFiles = 25000;
 	private int curFileId = 1;
 	private String listValue = "Start";
 	private int sarcasmValue = 2;
@@ -93,9 +93,11 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		//узнать сколько всего файлов
 		SharedPreferences sPref = getPreferences(MODE_PRIVATE);
 	    txtSize = sPref.getFloat(Key_001, SIZE_14);		
+		
 		curFileId = sPref.getInt(Key_002, 1);
 		
 		pager.setCurrentItem(curFileId);
+
 		if (listValue != "Start") {
 			int mark = -1;
 			if (!listValue.equals("?"))
@@ -200,16 +202,13 @@ public class ActivityWithText extends FragmentActivity implements OnClickListene
 		if (mark.equals("0"))
 			return 0;
 		int markInt = 0;
-		if (mark.equals("Сарказм"))
-			markInt = 6;
-		else
-			if (mark.equals("Удалить"))
-				markInt = -6;
-			else {
-				markInt = (int)(mark.charAt(1)) - (int)'0';
-				if (mark.charAt(0) == '-')
-					markInt *= -1;
-			}
+		if (mark.equals("Удалить"))
+			markInt = -6;
+		else {
+			markInt = (int) (mark.charAt(1)) - (int) '0';
+			if (mark.charAt(0) == '-')
+				markInt *= -1;
+		}
 		return markInt;
 	}
 	
