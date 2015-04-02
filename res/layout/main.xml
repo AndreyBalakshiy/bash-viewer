@@ -41,8 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/btn2"
-        android:layout_below="@+id/btn2"
-        android:layout_marginTop="28dp"
-        android:text="Очистить БД" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:text="Очистить БД (осторожно!)" />
 
 </RelativeLayout>
