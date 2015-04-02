@@ -58,6 +58,9 @@ public class MainActivity extends Activity implements OnClickListener {
 				e.printStackTrace();
 			}
 			break;
+		case R.id.btn4:
+			clearTable();
+			break;
 		}
 	}
 	
@@ -80,5 +83,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			} while (c.moveToNext());
 		}
 		c.close();
+	}
+	private void clearTable() {
+		DBHelper dbHelper = new DBHelper(this);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		db.delete(My_Table, "id < 999999", null);
 	}
 }
